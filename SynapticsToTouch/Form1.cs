@@ -48,6 +48,10 @@ namespace SynapticsToTouch
                 {
                     contacts[0].PointerInfo.PtPixelLocation.X = X;
                     contacts[0].PointerInfo.PtPixelLocation.Y = Y;
+                    contacts[0].ContactArea.left = X - synPacket.W;
+                    contacts[0].ContactArea.right = X + synPacket.W;
+                    contacts[0].ContactArea.top = Y - synPacket.W;
+                    contacts[0].ContactArea.bottom = Y + synPacket.W;
                     contacts[0].PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE | PointerFlags.INCONTACT;
                     //contacts[1].PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE | PointerFlags.INCONTACT;
 
@@ -62,7 +66,7 @@ namespace SynapticsToTouch
                     bool success2 = TouchInjector.InjectTouchInput(1, contacts);
                     contacts[0].PointerInfo.PointerId = 0;
                 }
-                touchLabel.Text = "X: " + X + ", Y: " + Y + ", W: " + synPacket.W;
+                touchLabel.Text = "X: " + X + ", Y: " + Y + ", W: " + synPacket.W + ", Z: " + synPacket.Z;
             }
             else
             {
@@ -125,8 +129,8 @@ namespace SynapticsToTouch
                 YMin = synDev.GetLongProperty(SynDeviceProperty.SP_YLoSensor);
                 YMax = synDev.GetLongProperty(SynDeviceProperty.SP_YHiSensor);
                 ZTouchThreshold = synDev.GetLongProperty(SynDeviceProperty.SP_ZTouchThreshold) + 20;
-                wHeight = GetScreen().Height;
-                wWidth = GetScreen().Width;
+                wHeight = GetScreen().Height - 1;
+                wWidth = GetScreen().Width - 1;
                 synDev.Acquire(0);
                 updateCalibrationStatusLabel();
 

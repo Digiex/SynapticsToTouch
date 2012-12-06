@@ -34,39 +34,76 @@ namespace SynapticsToTouch
             synDev = new SynDeviceCtrlClass();
             synPacket = new SynPacketCtrlClass();
         }
-
+        int lastFingerState = 0;
         PointerTouchInfo[] contacts = new PointerTouchInfo[1];
         void synDev_OnPacket()
         {
-            int X, Y;
             synDev.LoadPacket(synPacket);
-            X = (synPacket.X - XMin) * wWidth / (XMax - XMin);
-            Y = (YMax - synPacket.Y) * wHeight / (YMax - YMin);
-            //Finger = synPacket.FingerState & (int)SynFingerFlags.SF_FingerPresent;
-            if (contacts[0].PointerInfo.PointerId == 0 && synPacket.FingerState != 0)
+            if (calibrateState == 0)
             {
-                contacts[0] = MakePointerTouchInfo(X, Y, 2, 1);
-                //contacts[1] = MakePointerTouchInfo(650, 500, 2, 2);
-                bool success = TouchInjector.InjectTouchInput(1, contacts);
-            }
-            else if (synPacket.FingerState != 0)
-            {
-                contacts[0].PointerInfo.PtPixelLocation.X = X;
-                contacts[0].PointerInfo.PtPixelLocation.Y = Y;
-                contacts[0].PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE | PointerFlags.INCONTACT;
-                //contacts[1].PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE | PointerFlags.INCONTACT;
+                int X, Y;
+                X = Clamp(Clamp(synPacket.X - XMin, XMax, 0) * wWidth / (XMax - XMin), wWidth, 0);
+                Y = Clamp(Clamp(YMax - synPacket.Y, YMax, 0) * wHeight / (YMax - YMin), wHeight, 0);
+                if (contacts[0].PointerInfo.PointerId == 0 && synPacket.FingerState != 0)
+                {
+                    contacts[0] = MakePointerTouchInfo(X, Y, synPacket.W, 1);
+                    //contacts[1] = MakePointerTouchInfo(650, 500, 2, 2);
+                    bool success = TouchInjector.InjectTouchInput(1, contacts);
+                }
+                else if (synPacket.FingerState != 0)
+                {
+                    contacts[0].PointerInfo.PtPixelLocation.X = X;
+                    contacts[0].PointerInfo.PtPixelLocation.Y = Y;
+                    contacts[0].PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE | PointerFlags.INCONTACT;
+                    //contacts[1].PointerInfo.PointerFlags = PointerFlags.UPDATE | PointerFlags.INRANGE | PointerFlags.INCONTACT;
 
-                bool s = TouchInjector.InjectTouchInput(1, contacts);
+                    bool s = TouchInjector.InjectTouchInput(1, contacts);
+                }
+                else
+                {
+                    //release them
+                    contacts[0].PointerInfo.PointerFlags = PointerFlags.UP;
+                    //contacts[1].PointerInfo.PointerFlags = PointerFlags.UP;
+
+                    bool success2 = TouchInjector.InjectTouchInput(1, contacts);
+                    contacts[0].PointerInfo.PointerId = 0;
+                }
+                touchLabel.Text = "X: " + X + ", Y: " + Y + ", W: " + synPacket.W;
             }
             else
             {
-                //release them
-                contacts[0].PointerInfo.PointerFlags = PointerFlags.UP;
-                //contacts[1].PointerInfo.PointerFlags = PointerFlags.UP;
-
-                bool success2 = TouchInjector.InjectTouchInput(1, contacts);
-                contacts[0].PointerInfo.PointerId = 0;
+                if (synPacket.FingerState != 0 && lastFingerState == 0)
+                {
+                    switch (calibrateState)
+                    {
+                        case 1:
+                            XMin = synPacket.X;
+                            calibrateLabel.Text = "Swipe from top.";
+                            calibrateState = 2;
+                            break;
+                        case 2:
+                            YMax = synPacket.Y;
+                            calibrateLabel.Text = "Swipe from right.";
+                            calibrateState = 3;
+                            break;
+                        case 3:
+                            XMax = synPacket.X;
+                            calibrateLabel.Text = "Swipe from bottom.";
+                            calibrateState = 4;
+                            break;
+                        case 4:
+                            YMin = synPacket.Y;
+                            calibrateLabel.Text = "Done.";
+                            calibrateState = 5;
+                            break;
+                        case 5:
+                            calibrateState = 0;
+                            break;
+                    }
+                    updateCalibrationStatusLabel();
+                }
             }
+            lastFingerState = synPacket.FingerState;
         }
         public Rectangle GetScreen()
         {
@@ -87,7 +124,7 @@ namespace SynapticsToTouch
             {
                 synDev.Select(DeviceHandle);
                 synDev.Activate();
-                bool s = TouchInjector.InitializeTouchInjection();//initialize with default settings
+                bool s = TouchInjector.InitializeTouchInjection(256, TouchFeedback.INDIRECT);//initialize with default settings
 
                 XMin = synDev.GetLongProperty(SynDeviceProperty.SP_XLoSensor);
                 XMax = synDev.GetLongProperty(SynDeviceProperty.SP_XHiSensor);
@@ -95,8 +132,9 @@ namespace SynapticsToTouch
                 YMax = synDev.GetLongProperty(SynDeviceProperty.SP_YHiSensor);
                 ZTouchThreshold = synDev.GetLongProperty(SynDeviceProperty.SP_ZTouchThreshold) + 20;
                 wHeight = GetScreen().Height;
-                wWidth = GetScreen().Width; 
+                wWidth = GetScreen().Width;
                 synDev.Acquire(0);
+                updateCalibrationStatusLabel();
 
                 synDev.OnPacket += synDev_OnPacket;
             }
@@ -126,6 +164,26 @@ namespace SynapticsToTouch
             {
                 synDev.Unacquire();
             }
+        }
+        int calibrateState = 0;
+        private void calibrateButton_Click(object sender, EventArgs e)
+        {
+            calibrateLabel.Text = "Swipe from left edge.";
+            calibrateState = 1;
+        }
+        public static T Clamp<T>(T value, T max, T min)
+         where T : System.IComparable<T>
+        {
+            T result = value;
+            if (value.CompareTo(max) > 0)
+                result = max;
+            if (value.CompareTo(min) < 0)
+                result = min;
+            return result;
+        }
+        public void updateCalibrationStatusLabel()
+        {
+            calibrationStatusLabel.Text = "Left: " + XMin + ", Top: " + YMax + ", Right: " + XMax + ", Bottom:" + YMin;
         }
     }
 }

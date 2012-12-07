@@ -33,6 +33,7 @@
             this.calibrateLabel = new System.Windows.Forms.Label();
             this.touchLabel = new System.Windows.Forms.Label();
             this.calibrationStatusLabel = new System.Windows.Forms.Label();
+            this.adminButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // calibrateButton
@@ -72,11 +73,22 @@
             this.calibrationStatusLabel.TabIndex = 3;
             this.calibrationStatusLabel.Text = "Calibration status";
             // 
+            // adminButton
+            // 
+            this.adminButton.Location = new System.Drawing.Point(93, 12);
+            this.adminButton.Name = "adminButton";
+            this.adminButton.Size = new System.Drawing.Size(179, 23);
+            this.adminButton.TabIndex = 4;
+            this.adminButton.Text = "Run as Administrator";
+            this.adminButton.UseVisualStyleBackColor = true;
+            this.adminButton.Click += new System.EventHandler(this.adminButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.adminButton);
             this.Controls.Add(this.calibrationStatusLabel);
             this.Controls.Add(this.touchLabel);
             this.Controls.Add(this.calibrateLabel);
@@ -97,6 +109,7 @@
         private System.Windows.Forms.Label calibrateLabel;
         private System.Windows.Forms.Label touchLabel;
         private System.Windows.Forms.Label calibrationStatusLabel;
+        private System.Windows.Forms.Button adminButton;
     }
 }
 

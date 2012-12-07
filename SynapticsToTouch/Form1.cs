@@ -1,8 +1,11 @@
 ﻿using SynapticsToTouch.Properties;
 using SYNCTRLLib;
 using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Security.Principal;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace SynapticsToTouch
 {
@@ -58,7 +61,7 @@ namespace SynapticsToTouch
 
                     bool s = TouchInjector.InjectTouchInput(1, contacts);
                 }
-                else if((contacts[0].PointerInfo.PointerFlags & PointerFlags.UP) != PointerFlags.UP)
+                else if ((contacts[0].PointerInfo.PointerFlags & PointerFlags.UP) != PointerFlags.UP)
                 {
                     //release them
                     contacts[0].PointerInfo.PointerFlags = PointerFlags.UP;
@@ -116,6 +119,23 @@ namespace SynapticsToTouch
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            try
+            {
+                // Get the SID of the admin group on the local machine.
+                var localAdminGroupSid = new SecurityIdentifier(
+                    WellKnownSidType.BuiltinAdministratorsSid, null);
+                WindowsIdentity windowsIdentity = WindowsIdentity.GetCurrent();
+
+                //Then you can check the Groups property on the WindowsIdentity of the user to see if that user is a member of the local admin group, like so:
+                bool isLocalAdmin = windowsIdentity.Groups.
+                    Select(g => (SecurityIdentifier)g.Translate(typeof(SecurityIdentifier))).
+                    Any(s => s == localAdminGroupSid);
+                if (isLocalAdmin)
+                {
+                    adminButton.Visible = false;
+                }
+            }
+            catch (Exception) { }
             synAPI.Initialize();
             synAPI.Activate();
             DeviceHandle = synAPI.FindDevice(SynConnectionType.SE_ConnectionAny, SynDeviceType.SE_DeviceTouchPad, -1);
@@ -216,6 +236,19 @@ namespace SynapticsToTouch
         public void updateCalibrationStatusLabel()
         {
             calibrationStatusLabel.Text = "Left: " + XMin + ", Top: " + YMax + ", Right: " + XMax + ", Bottom:" + YMin;
+        }
+
+        private void adminButton_Click(object sender, EventArgs e)
+        {
+            var psi = new ProcessStartInfo();
+            psi.FileName = System.Reflection.Assembly.GetEntryAssembly().Location;
+            psi.Arguments = "/admin";
+            psi.Verb = "runas";
+
+            var process = new Process();
+            process.StartInfo = psi;
+            this.Close();
+            process.Start();
         }
     }
 }

@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.calibrateButton = new System.Windows.Forms.Button();
             this.calibrateLabel = new System.Windows.Forms.Label();
             this.touchLabel = new System.Windows.Forms.Label();
             this.calibrationStatusLabel = new System.Windows.Forms.Label();
             this.adminButton = new System.Windows.Forms.Button();
+            this.hideBox = new System.Windows.Forms.CheckBox();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
             // calibrateButton
@@ -83,11 +86,29 @@
             this.adminButton.UseVisualStyleBackColor = true;
             this.adminButton.Click += new System.EventHandler(this.adminButton_Click);
             // 
+            // hideBox
+            // 
+            this.hideBox.AutoSize = true;
+            this.hideBox.Location = new System.Drawing.Point(12, 219);
+            this.hideBox.Name = "hideBox";
+            this.hideBox.Size = new System.Drawing.Size(215, 17);
+            this.hideBox.TabIndex = 5;
+            this.hideBox.Text = "Hide to notification area when minimized";
+            this.hideBox.UseVisualStyleBackColor = true;
+            this.hideBox.CheckedChanged += new System.EventHandler(this.hideBox_CheckedChanged);
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "Synaptics To Touch";
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.hideBox);
             this.Controls.Add(this.adminButton);
             this.Controls.Add(this.calibrationStatusLabel);
             this.Controls.Add(this.touchLabel);
@@ -98,6 +119,7 @@
             this.Text = "Synaptics To Touch";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -110,6 +132,8 @@
         private System.Windows.Forms.Label touchLabel;
         private System.Windows.Forms.Label calibrationStatusLabel;
         private System.Windows.Forms.Button adminButton;
+        private System.Windows.Forms.CheckBox hideBox;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }
 

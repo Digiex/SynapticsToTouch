@@ -150,6 +150,7 @@ namespace SynapticsToTouch
                 synDev.Activate();
                 bool s = TouchInjector.InitializeTouchInjection(256, TouchFeedback.INDIRECT);//initialize with default settings
                 Settings sett = Settings.Default;
+                hideBox.Checked = sett.HideToTaskbar;
                 if (sett.XMin != 0)
                 {
                     XMin = sett.XMin;
@@ -249,6 +250,31 @@ namespace SynapticsToTouch
             process.StartInfo = psi;
             this.Close();
             process.Start();
+        }
+
+        private void hideBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Default.HideToTaskbar = hideBox.Checked;
+            Settings.Default.Save();
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            notifyIcon1.Visible = false;
+            this.ShowInTaskbar = true;
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                if (Settings.Default.HideToTaskbar)
+                {
+                    notifyIcon1.Visible = true;
+                    this.ShowInTaskbar = false;
+                }
+            }
         }
     }
 }

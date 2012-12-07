@@ -70,5 +70,17 @@ namespace SynapticsToTouch.Properties {
                 this["YMax"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HideToTaskbar {
+            get {
+                return ((bool)(this["HideToTaskbar"]));
+            }
+            set {
+                this["HideToTaskbar"] = value;
+            }
+        }
     }
 }

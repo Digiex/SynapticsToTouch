@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SynapticsToTouch")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Synaptics touchpad as touch input device")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Digiex.net")]
 [assembly: AssemblyProduct("SynapticsToTouch")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]

@@ -116,7 +116,7 @@ namespace SynapticsToTouch
         {
             return Screen.FromControl(this).Bounds;
         }
-
+        int oldDisableState = 0;
         private void Form1_Load(object sender, EventArgs e)
         {
             try
@@ -148,6 +148,8 @@ namespace SynapticsToTouch
             {
                 synDev.Select(DeviceHandle);
                 synDev.Activate();
+                oldDisableState = synDev.GetLongProperty(SynDeviceProperty.SP_DisableState);
+                synDev.SetLongProperty(SynDeviceProperty.SP_DisableState, 0);
                 bool s = TouchInjector.InitializeTouchInjection(256, TouchFeedback.INDIRECT);//initialize with default settings
                 Settings sett = Settings.Default;
                 hideBox.Checked = sett.HideToTaskbar;
@@ -215,6 +217,7 @@ namespace SynapticsToTouch
         {
             if (DeviceHandle != -1)
             {
+                synDev.SetLongProperty(SynDeviceProperty.SP_DisableState, oldDisableState);
                 synDev.Unacquire();
             }
         }

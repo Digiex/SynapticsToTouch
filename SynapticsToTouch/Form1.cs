@@ -1,4 +1,5 @@
-﻿using SYNCTRLLib;
+﻿using SynapticsToTouch.Properties;
+using SYNCTRLLib;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -93,6 +94,11 @@ namespace SynapticsToTouch
                             YMin = synPacket.Y;
                             calibrateLabel.Text = "Done.";
                             calibrateState = 5;
+                            Settings.Default.XMin = XMin;
+                            Settings.Default.XMax = XMax;
+                            Settings.Default.YMin = YMin;
+                            Settings.Default.YMax = YMax;
+                            Settings.Default.Save();
                             break;
                         case 5:
                             calibrateState = 0;
@@ -123,11 +129,39 @@ namespace SynapticsToTouch
                 synDev.Select(DeviceHandle);
                 synDev.Activate();
                 bool s = TouchInjector.InitializeTouchInjection(256, TouchFeedback.INDIRECT);//initialize with default settings
-
-                XMin = synDev.GetLongProperty(SynDeviceProperty.SP_XLoSensor);
-                XMax = synDev.GetLongProperty(SynDeviceProperty.SP_XHiSensor);
-                YMin = synDev.GetLongProperty(SynDeviceProperty.SP_YLoSensor);
-                YMax = synDev.GetLongProperty(SynDeviceProperty.SP_YHiSensor);
+                Settings sett = Settings.Default;
+                if (sett.XMin != 0)
+                {
+                    XMin = sett.XMin;
+                }
+                else
+                {
+                    XMin = synDev.GetLongProperty(SynDeviceProperty.SP_XLoSensor);
+                }
+                if (sett.XMax != 0)
+                {
+                    XMax = sett.XMax;
+                }
+                else
+                {
+                    XMax = synDev.GetLongProperty(SynDeviceProperty.SP_XHiSensor);
+                }
+                if (sett.YMin != 0)
+                {
+                    YMin = sett.YMin;
+                }
+                else
+                {
+                    YMin = synDev.GetLongProperty(SynDeviceProperty.SP_YLoSensor);
+                }
+                if (sett.YMax != 0)
+                {
+                    YMax = sett.YMax;
+                }
+                else
+                {
+                    YMax = synDev.GetLongProperty(SynDeviceProperty.SP_YHiSensor);
+                }
                 ZTouchThreshold = synDev.GetLongProperty(SynDeviceProperty.SP_ZTouchThreshold) + 20;
                 wHeight = GetScreen().Height - 1;
                 wWidth = GetScreen().Width - 1;

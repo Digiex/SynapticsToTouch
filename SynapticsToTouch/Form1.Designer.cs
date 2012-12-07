@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.calibrateButton = new System.Windows.Forms.Button();
             this.calibrateLabel = new System.Windows.Forms.Label();
             this.touchLabel = new System.Windows.Forms.Label();
@@ -80,8 +81,9 @@
             this.Controls.Add(this.touchLabel);
             this.Controls.Add(this.calibrateLabel);
             this.Controls.Add(this.calibrateButton);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Synaptics To Touch";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);

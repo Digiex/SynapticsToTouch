@@ -22,5 +22,53 @@ namespace SynapticsToTouch.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int XMin {
+            get {
+                return ((int)(this["XMin"]));
+            }
+            set {
+                this["XMin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int XMax {
+            get {
+                return ((int)(this["XMax"]));
+            }
+            set {
+                this["XMax"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int YMin {
+            get {
+                return ((int)(this["YMin"]));
+            }
+            set {
+                this["YMin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int YMax {
+            get {
+                return ((int)(this["YMax"]));
+            }
+            set {
+                this["YMax"] = value;
+            }
+        }
     }
 }

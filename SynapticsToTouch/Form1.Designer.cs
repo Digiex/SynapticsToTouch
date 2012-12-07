@@ -43,7 +43,7 @@
             // 
             this.calibrateButton.Location = new System.Drawing.Point(12, 12);
             this.calibrateButton.Name = "calibrateButton";
-            this.calibrateButton.Size = new System.Drawing.Size(75, 23);
+            this.calibrateButton.Size = new System.Drawing.Size(75, 32);
             this.calibrateButton.TabIndex = 0;
             this.calibrateButton.Text = "Calibrate";
             this.calibrateButton.UseVisualStyleBackColor = true;
@@ -78,9 +78,11 @@
             // 
             // adminButton
             // 
+            this.adminButton.Image = ((System.Drawing.Image)(resources.GetObject("adminButton.Image")));
+            this.adminButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.adminButton.Location = new System.Drawing.Point(93, 12);
             this.adminButton.Name = "adminButton";
-            this.adminButton.Size = new System.Drawing.Size(179, 23);
+            this.adminButton.Size = new System.Drawing.Size(179, 32);
             this.adminButton.TabIndex = 4;
             this.adminButton.Text = "Run as Administrator";
             this.adminButton.UseVisualStyleBackColor = true;

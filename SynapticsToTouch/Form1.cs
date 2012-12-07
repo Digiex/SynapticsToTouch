@@ -39,13 +39,13 @@ namespace SynapticsToTouch
                 int X, Y;
                 X = Clamp(Clamp(synPacket.X - XMin, XMax, 0) * wWidth / (XMax - XMin), wWidth, 0);
                 Y = Clamp(Clamp(YMax - synPacket.Y, YMax, 0) * wHeight / (YMax - YMin), wHeight, 0);
-                if (contacts[0].PointerInfo.PointerId == 0 && synPacket.FingerState != 0)
+                if (contacts[0].PointerInfo.PointerId == 0 && synPacket.FingerState != 0 && synPacket.X > 1 && synPacket.Y > 1)
                 {
                     contacts[0] = MakePointerTouchInfo(X, Y, synPacket.W, 1);
                     //contacts[1] = MakePointerTouchInfo(650, 500, 2, 2);
                     bool success = TouchInjector.InjectTouchInput(1, contacts);
                 }
-                else if (synPacket.FingerState != 0)
+                else if (synPacket.FingerState != 0 && synPacket.X > 1 && synPacket.Y > 1)
                 {
                     contacts[0].PointerInfo.PtPixelLocation.X = X;
                     contacts[0].PointerInfo.PtPixelLocation.Y = Y;
@@ -58,7 +58,7 @@ namespace SynapticsToTouch
 
                     bool s = TouchInjector.InjectTouchInput(1, contacts);
                 }
-                else
+                else if((contacts[0].PointerInfo.PointerFlags & PointerFlags.UP) != PointerFlags.UP)
                 {
                     //release them
                     contacts[0].PointerInfo.PointerFlags = PointerFlags.UP;

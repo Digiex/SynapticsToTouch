@@ -37,6 +37,11 @@ namespace SynapticsToTouch
         void synDev_OnPacket()
         {
             synDev.LoadPacket(synPacket);
+            System.Windows.Shapes.Ellipse fing = ((TouchpadView)elementHost1.Child).Finger1;
+            var mar = fing.Margin;
+            mar.Left = Clamp(Clamp(synPacket.X - XMin, XMax, 0) * fing.Width / (XMax - XMin), fing.Height, 0);
+            mar.Top = Clamp(Clamp(YMax - synPacket.Y, YMax, 0) * fing.Height / (YMax - YMin), fing.Height, 0);
+            fing.Margin = mar;
             if (calibrateState == 0)
             {
                 int X, Y;
